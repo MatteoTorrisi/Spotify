@@ -53,3 +53,4 @@ export class SearchArtist implements OnInit{
   }
 
 }
+

@@ -1,5 +1,5 @@
 import { Component, inject, Signal, signal } from '@angular/core';
-import { form, FormField } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
 import { UsersService } from '../users-service';
 
 @Component({
@@ -18,9 +18,13 @@ export class Login {
 
   loginError = this.usersService.loginError;
 
-  loginForm = form(this.loginData);
+  loginForm = form(this.loginData, (schemaPath) => {
+    required(schemaPath.username, {message: 'Username obbligatorio'});
+    required(schemaPath.password, {message: 'Password richiesta'});
+  });
 
-  login(): void {
+  login(eventData: any): void {
+    eventData.preventDefault();
     this.usersService.login(this.loginData().username, this.loginData().password);
   }
 }

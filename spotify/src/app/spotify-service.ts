@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { IToken } from './interfaces/i-token';
 import { interval, Observable } from 'rxjs';
 import { ISearchArtists } from './interfaces/i-artists-search';
@@ -17,8 +17,8 @@ export class SpotifyService {
   // dopo che nel file app.config.ts si aggiunge provideHttpClient()
   private httpClient: HttpClient = inject(HttpClient);
 
-  private client_id: string = 'fceb1e53687448bbab8abb82fec80252';
-  private client_secret: string = '973654b2da524add8b97c9d5ee4bd6bb';
+  private client_id: string = 'f1b1e3d3a5e14f2fa6e2e2f4c3b4d5e6';
+  private client_secret: string = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
   private urls: string[] = [
     'https://accounts.spotify.com/api/token',
     'https://api.spotify.com/v1/search?q=',
@@ -27,6 +27,9 @@ export class SpotifyService {
   ]
 
   private _token!: IToken;
+
+  private _validToken: WritableSignal<boolean> = signal(false);
+  gotToken: Signal<boolean> = this._validToken.asReadonly();
 
   public getToken(): void {
     // Preparare l'header della richiesta
@@ -42,11 +45,14 @@ export class SpotifyService {
     this.httpClient.post<IToken>(this.urls[0], httpParams.toString(), { headers: httpHeader })
       .subscribe((token: IToken) => {
         this._token = token;
+        this._validToken.set(true);
         console.log(this._token);
         interval(this._token.expires_in * 1000).subscribe(() => {
+          this._validToken.set(false);
           this.httpClient.post<IToken>(this.urls[0], httpParams.toString(), { headers: httpHeader })
             .subscribe((token: IToken) => {
               this._token = token;
+              this._validToken.set(true);
             })
         })
       })

@@ -1,17 +1,24 @@
-<div class="mb-3">
-    <label for="idUserName" class="form-label">Username</label>
-    <input type="text" class="form-control" id="idUserName" aria-describedby="textHelp"
+<form (submit)="login($event)">
+    <div class="mb-3">
+        <label for="idUserName" class="form-label">Username</label>
+        <input type="text" class="form-control" id="idUserName" aria-describedby="textHelp"
         [formField]="loginForm.username">
-    <div id="textHelp" class="form-text">Insert your username.</div>
-</div>
-<div class="mb-3">
-    <label for="idPassword" class="form-label">Password</label>
-    <input type="password" class="form-control" id="idPassword" [formField]="loginForm.password">
-</div>
-<button type="button" class="btn btn-primary" (click)="login()">Login</button>
-<button type="button" class="btn btn-alert">Undo</button>
-@if(loginError()) {
-    <div class="alert alert-danger" role="alert">
-        Username o password errati
+        @if(loginForm.username().invalid() && loginForm.username().touched()) {
+            <div id="textHelp" class="form-text text-danger">Username obbligatorio.</div>
+        }
     </div>
-}
+    <div class="mb-3">
+        <label for="idPassword" class="form-label">Password</label>
+        <input type="password" class="form-control" id="idPassword" [formField]="loginForm.password">
+          @if(loginForm.password().invalid() && loginForm.password().touched()) {
+            <div id="textHelp" class="form-text text-danger">La password non può essere vuota.</div>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="loginForm().invalid()">Login</button>
+    <button type="button" class="btn btn-danger">Undo</button>
+    @if(loginError()) {
+        <div class="alert alert-danger mt-5" role="alert">
+            Username o password errati.
+        </div>
+    }
+</form>
