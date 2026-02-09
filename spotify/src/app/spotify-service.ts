@@ -30,6 +30,7 @@ export class SpotifyService {
 
   private _validToken: WritableSignal<boolean> = signal(false);
   gotToken: Signal<boolean> = this._validToken.asReadonly();
+  validToken: any;
 
   public getToken(): void {
     // Preparare l'header della richiesta

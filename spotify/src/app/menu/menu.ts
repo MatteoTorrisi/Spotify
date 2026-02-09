@@ -10,10 +10,13 @@ import { UsersService } from '../users-service';
   styleUrl: './menu.css',
 })
 export class Menu {
-
   spotifyService: SpotifyService = inject(SpotifyService);
   userService: UsersService = inject(UsersService);
 
-  validToken = this.spotifyService.gotToken();
+  validToken = this.spotifyService.validToken;
+  isLogged = this.userService.isLogged;
 
+  logout(): void {
+    this.userService.logout();
+  }
 }
